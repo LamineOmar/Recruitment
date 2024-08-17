@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Submission</title>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Enter Post description</h1>
+        <form action="/submit" method="post">
+            <textarea name="user_text" placeholder="Type something..."></textarea>
+            <br>
+            <button type="submit">Submit</button>
+        </form>
+        {% if user_text %}
+        <div class="output">
+            <h2>Your Text:</h2>
+            <p>{{ user_text }}</p>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
