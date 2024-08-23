@@ -8,16 +8,16 @@
 </head>
 <body>
     <div class="container">
-        <h1>Enter Post description</h1>
+        <h1>Enter Post description (english)</h1>
         <form action="/submit" method="post">
-            <textarea name="user_text" placeholder="Type something..."></textarea>
+            <textarea name="user_input" placeholder="Type something..."></textarea>
             <br>
             <button type="submit">Submit</button>
         </form>
-        {% if user_text %}
+        {% if user_input %}
         <div class="output">
             <h2>Your Text:</h2>
-            <p>{{ user_text }}</p>
+            <p>{{ user_input }}</p>
         </div>
         {% endif %}
     </div>
