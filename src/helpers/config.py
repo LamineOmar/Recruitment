@@ -6,9 +6,11 @@ class Settings(BaseSettings):
     FILE_ALLOWED_TYPES: list
     CV_FILE_MAX_SIZE: int
     SIZE_OF_POST_DESCRIPTION: float
+    GEMINI_API_KEY:str
+
 
     class Config:
-        env_file = ".env"
+        env_file = "src/.env"
 
 def get_settings():
     return Settings()

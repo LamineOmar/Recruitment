@@ -1,6 +1,6 @@
 from .BaseController import BaseController
 from fastapi import UploadFile
-from models import ResponseSignal
+from src.models import ResponseSignal
 import re
 import os
 
@@ -56,3 +56,25 @@ class DataController(BaseController):
         cleaned_file_name = cleaned_file_name.replace(" ", "_")
 
         return cleaned_file_name
+    def get_prompt(self):
+        return """
+        You are an AI front-end developer and an assistant that generates QCM questions strictly to evaluate a candidate's skills and knowledge based on the "Compétences Techniques" and "Responsabilité" sections of the following job description. Please generate 10 advanced 1 answer questions, including the correct answers, formatted as JSON.
+
+        The JSON structure should include:
+        - A list of questions.
+        - Each question should have:
+        - "question": The text of the question.
+        - "options": A list of multiple-choice options.
+        - "answer": The correct answer.
+
+        Strict Guidelines:
+        - **Only generate questions that test the candidate's understanding and skills**, based on the technologies and responsibilities mentioned in the "Compétences Techniques" and "Responsabilité" sections.
+        - **Do not ask candidates to recall details directly from the job description.** Instead, ask questions that assess their knowledge of how to apply these skills and handle these responsibilities in real-world scenarios.
+        - **Questions should be practical and skill-based,** aimed at testing the candidate's competency in the relevant technical areas and responsibilities.
+        - Avoid speculative or hypothetical questions.
+
+        Job Description:
+        {job_description}
+
+        Generate the JSON:
+        """

@@ -3,7 +3,7 @@
 This project aims to digitize the recruitment process by matching candidates' CVs with job descriptions and generating questions for these candidates, among other tasks.
 
 ## Requirements
-- Python 3.8 or later
+- Python 3.10 
 
 #### install Python using Miniconda
 
@@ -16,7 +16,7 @@ $ wget [link]
 ```
 2) Create a new environment using the following command:
 ```bash
-$ conda create -n recruitement python=3.8
+$ conda create -n recruitement python=3.10
 ```
 3) Activate the environment:
 ```bash
