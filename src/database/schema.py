@@ -20,9 +20,6 @@ class Test(BaseModel):
         
 class CandidatInfo(BaseModel):
     email : str
-    nom : str
-    tel : str
-    accepte : Optional[str]
     test_password : Optional[str]
     job_description_id : int
 
