@@ -18,9 +18,6 @@ class CandidatInfo(Base):
     __tablename__ = 'candidat_info'
     id_candidatInfo = Column(Integer, primary_key=True, autoincrement=True)
     email = Column(String)
-    nom = Column(String)
-    tel = Column(String)
-    accepte = Column(Boolean, default=False) 
     test_password = Column(String)
     job_description_id = Column(Integer, ForeignKey('job_description.job_description_id'))
 
