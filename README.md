@@ -22,7 +22,11 @@ conda create -n recruitement python=3.10.14
 ```bash
 conda activate recruitement
 ```
+4) Create a .env file in the src directory, copy the contents of .env.example into .env, and then add the necessary values.
+```bash
+cp src/.env.example src/.env
 
+```
 
 ### Run docker-compose after starting Docker Desktop
 ```bash
