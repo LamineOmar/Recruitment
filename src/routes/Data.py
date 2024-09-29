@@ -6,8 +6,9 @@ from fastapi.responses import HTMLResponse, JSONResponse
 from typing import List
 
 
-from Recruitment.src.controllers import SkillsExtractionController
-from Recruitment.src.controllers import JobMatchingSystem
+
+from controllers import SkillsExtractionController
+from controllers.MatchingControllers import JobMatchingSystem
 from src.helpers.config import get_settings, Settings
 from src.controllers import DataController
 from sqlalchemy.orm import Session
