@@ -1,15 +1,18 @@
+import sys
+import os
+
+
+
 import email
 import os
 from fastapi import APIRouter, Request, Form, File, UploadFile, Depends, status
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse, JSONResponse
 from typing import List
-
-
-from Recruitment.src.controllers import SkillsExtractionController
-from Recruitment.src.controllers import JobMatchingSystem
-from src.helpers.config import get_settings, Settings
-from src.controllers import DataController
+from src.controllers import SkillsExtractionController
+from src.controllers import MatchingControllers
+from helpers.config import get_settings, Settings
+from controllers import DataController
 from sqlalchemy.orm import Session
 from src.database.schema import JobDescription, Test, CandidatInfo, CandidatAnswer
 from src.database.database import SessionLocal, engine
@@ -54,7 +57,7 @@ async def submit_form(
 ):
     data_controller = DataController()
     skills_extractor = SkillsExtractionController()  # Instancier le contrôleur d'extraction
-    matching_system = JobMatchingSystem()  # Instancier le système de matching
+    matching_system = MatchingControllers.JobMatchingSystem()  # Instancier le système de matching
 
     job_description_obj = JobDescription(job_description=user_input)
     crud.crud.save_job_description(db, job_description_obj)

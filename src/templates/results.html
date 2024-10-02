@@ -17,8 +17,8 @@
                     <tr>
                         <th>CV File Name</th>
                         <th>Email</th>
-                        <th>Similarity Score</th>
-                        <th>Action</th>
+                        
+                        
                     </tr>
                 </thead>
                 <tbody>
@@ -27,12 +27,9 @@
                     <tr>
                         <td>{{ match.filename }}</td> <!-- Nom du fichier CV -->
                         <td>{{ match.email }}</td> <!-- Email -->
-                        <td>{{ match.similarity_score }}</td> <!-- Score de similarité -->
-                        <td>
-                            <!-- Form to send an email to the candidate -->
-                            <form action="/send_email" method="post">
-                                <input type="hidden" name="email" value="{{ match.email }}">
-                                <button type="submit" class="btn btn-success">Send Acceptance Email</button>
+                        
+                      
+                                
                             </form>
                         </td>
                     </tr>
