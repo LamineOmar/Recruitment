@@ -10,9 +10,10 @@ from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse, JSONResponse
 from typing import List
 from src.controllers import SkillsExtractionController
+from src.controllers.SkillsExtractionController import SkillsExtractionController
 from src.controllers import MatchingControllers
-from helpers.config import get_settings, Settings
-from controllers import DataController
+from src.helpers.config import get_settings, Settings
+from src.controllers import DataController
 from sqlalchemy.orm import Session
 from src.database.schema import JobDescription, Test, CandidatInfo, CandidatAnswer
 from src.database.database import SessionLocal, engine
@@ -56,66 +57,64 @@ async def submit_form(
     db: Session = Depends(get_db)
 ):
     data_controller = DataController()
-    skills_extractor = SkillsExtractionController()  # Instancier le contrôleur d'extraction
-    matching_system = MatchingControllers.JobMatchingSystem()  # Instancier le système de matching
+    skills_extractor = SkillsExtractionController()  # Instantiate the skills extractor
+    matching_system = MatchingControllers.JobMatchingSystem()  # Instantiate the matching system
 
-    job_description_obj = JobDescription(job_description=user_input)
-    crud.crud.save_job_description(db, job_description_obj)
-    # result = crud.crud.get_job_description_info(db)
-    # result = [job.job_description for job in result]
-    # Assurez-vous que le répertoire existe
+    # Save the job description into the database
+    job_description = JobDescription(job_description=user_input)
+    crud.crud.save_job_description(db, job_description)
+
+    # Ensure the upload directory exists
     upload_directory = "assets/files"
     os.makedirs(upload_directory, exist_ok=True)
-    
-    file_ids = []  # Liste pour stocker les IDs des fichiers traités
-    extracted_data = []  # Liste pour stocker les informations extraites
+
+    file_ids = []  # List to store processed file IDs
+    extracted_data = []  # List to store extracted information
     extracted_skills_csv = os.path.join(upload_directory, "extracted_skills.csv")
 
+    # Save job description to a file
     job_description_path = os.path.join(upload_directory, "job_description.txt")
     with open(job_description_path, 'w', encoding='utf-8') as fichier:
         fichier.write(user_input)
 
     for file in files:
+        # Validate uploaded file and job description
         is_valid, result_signal = data_controller.validate_uploaded_file(file=file)
         is_valid_post, result_signal_post = data_controller.validate_uploaded_post(post=user_input)
 
         if not is_valid or not is_valid_post:
-            dont_show_button=1
-            if not is_valid:
-                message = result_signal
-            else:
-                message = result_signal_post
+            dont_show_button = 1
+            message = result_signal if not is_valid else result_signal_post
             
             return templates.TemplateResponse(
                 "index2.html",
                 status_code=status.HTTP_400_BAD_REQUEST,
                 context={
-                    "request": request,  # Passez l'objet request au contexte
+                    "request": request,
                     "signal": message,
-                    "dont_show_button":dont_show_button,
+                    "dont_show_button": dont_show_button,
                     "file_ids": file_ids
                 }
             )
-        # Générer le chemin du fichier et l'ID unique
+
+        # Generate unique file path and ID
         file_path, file_id = data_controller.generate_unique_filepath(orig_file_name=file.filename)
 
-        # Enregistrer le fichier
+        # Save the uploaded file
         with open(file_path, "wb") as f:
             content = await file.read()
             f.write(content)
 
-        file_post = os.path.join(
-            data_controller.files_dir,
-            "post_description.txt"
-         )
+        # Save the post description to a file
+        file_post = os.path.join(data_controller.files_dir, "post_description.txt")
         with open(file_post, 'w', encoding='utf-8') as fichier:
-            # Écrire le texte dans le fichier
             fichier.write(user_input)
-         # Appel à SkillsExtractionController pour extraire les informations
+
+        # Extract information from the resume
         text = skills_extractor.extract_text_from_pdf(pdf_path=file_path)
         contact_number = skills_extractor.extract_contact_number_from_resume(text=text)
 
-        # Extraire les compétences du CV
+        # Extract skills from the resume
         extracted_info = skills_extractor.process_resume(
             pdf_path=file_path,
             skills_list=[ # Langages de programmation
@@ -177,36 +176,39 @@ async def submit_form(
             id_counter=len(file_ids)
         )
 
-        print(f"Informations extraites pour {file.filename} : {extracted_info}")
-        extracted_data.append(extracted_info)    
-        # Ajouter l'ID du fichier à la liste
+        print(f"Extracted information for {file.filename}: {extracted_info}")
+        extracted_data.append(extracted_info)
         file_ids.append(file_id)
 
-   # Enregistrement des données extraites dans un CSV
+    # Save extracted data to a CSV
     skills_extractor.save_to_single_csv(extracted_data, extracted_skills_csv)
 
-    # Comparer la description du poste avec les compétences extraites
-    top_matches = matching_system.match_job_description_to_skills(job_description_path, extracted_skills_csv,top_n=top_n)
+    # Compare the job description with extracted skills
+    top_matches = [
+    {"filename": match[0], "email": match[1]} for match in matching_system.match_job_description_to_skills(job_description_path, extracted_skills_csv, top_n=top_n)
+]
 
 
-    # Save the matching results into the CandidatInfo table
+    # Save matching results into the CandidatInfo table
     for match in top_matches:
+        email = match['email']  # Use the extracted email from the match
         candidat_info = models.CandidatInfo(
-            email=match['email'],  # Use the extracted email from the CV
-            test_password=None,    # Optional test password
-            job_description_id=job_description_obj.id
+            email=email,  # Extracted email from the CV
+            test_password=None,  # Optional test password
+            
         )
         db.add(candidat_info)
 
-    db.commit()
-    # Afficher les résultats après la soumission
+    db.commit()  # Commit the transaction to the database
+
+    # Display the results after submission
     return templates.TemplateResponse(
-        "results.html",
-        context={
-            "request": request,
-            "signal": ResponseSignal.FILE_UPLOAD_SUCCESS.value,
-            "signal_post": ResponseSignal.POST_UPLOAD_SUCCESS.value,
-            "file_ids": file_ids,
-            "top_matches": top_matches  # Résultats du matching
-        }
-    )
+    "results.html",
+    context={
+        "request": request,
+        "signal": ResponseSignal.FILE_UPLOAD_SUCCESS.value,
+        "signal_post": ResponseSignal.POST_UPLOAD_SUCCESS.value,
+        "file_ids": file_ids,
+        "top_matches": top_matches  # Résultats du matching
+    }
+)

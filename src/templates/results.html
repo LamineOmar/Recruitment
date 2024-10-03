@@ -23,18 +23,14 @@
                 </thead>
                 <tbody>
                     <!-- Loop to display the matching results -->
-                    {% for match in matches %}
+                    {% for match in top_matches %}
                     <tr>
                         <td>{{ match.filename }}</td> <!-- Nom du fichier CV -->
                         <td>{{ match.email }}</td> <!-- Email -->
-                        
-                      
-                                
-                            </form>
-                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
+                
             </table>
         </div>
     </div>
