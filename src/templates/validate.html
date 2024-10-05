@@ -34,6 +34,14 @@
   * Author: BootstrapMade.com
   * License: https://bootstrapmade.com/license/
   ======================================================== -->
+  <style>
+
+#mesg_succes{
+  text-align: center;
+  margin-bottom: 100px;
+  color: green;
+}
+  </style>
 </head>
 
 <body class="index-page">
@@ -41,15 +49,17 @@
   <header id="header" class="header d-flex align-items-center sticky-top">
     <div class="container-fluid container-xl position-relative d-flex align-items-center">
 
-      <a href="index.html" class="logo d-flex align-items-center me-auto">
+      <a href="#" class="logo d-flex align-items-center me-auto">
         <!-- Uncomment the line below if you also wish to use an image logo -->
-        <!-- <img src="assets/img/logo.png" alt=""> -->
+        <img src="static/img/logo.png" alt="">
         <h1 class="sitename">R-NLP</h1>
       </a>
 
       <nav id="navmenu" class="navmenu">
         <ul>
-          
+          <li><a href="{{ url_for('read_index') }}" class="active">Home</a></li>
+        
+        
         </ul>
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>
@@ -63,15 +73,17 @@
 
     <!-- Hero Section -->
     <section id="hero" class="hero section">
-       questions are created succesfully
       
+
     </section><!-- /Hero Section -->
 
 
 
     
    
-
+    <div id="mesg_succes">
+      questions are created succesfully
+     </div>
     
    
 

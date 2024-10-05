@@ -1,11 +1,268 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>Dashboard - R-NLP</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="assets/img/favicon.png" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="static/vendor1/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="static/vendor1/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="static/vendor1/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="static/vendor1/quill/quill.snow.css" rel="stylesheet">
+  <link href="static/vendor1/quill/quill.bubble.css" rel="stylesheet">
+  <link href="static/vendor1/remixicon/remixicon.css" rel="stylesheet">
+  <link href="static/vendor1/simple-datatables/style.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  
+  <!-- Template Main CSS File -->
+  <link href="static/style1.css" rel="stylesheet">
+
+  <!-- =======================================================
+  * Template Name: NiceAdmin
+  * Template URL: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/
+  * Updated: Apr 20 2024 with Bootstrap v5.3.3
+  * Author: BootstrapMade.com
+  * License: https://bootstrapmade.com/license/
+  ======================================================== -->
 </head>
+
 <body>
+
+  <!-- ======= Header ======= -->
+  <header id="header" class="header fixed-top d-flex align-items-center">
+
+    <div class="d-flex align-items-center justify-content-between">
+      <a href="{{ url_for('dashboard') }}" class="logo d-flex align-items-center">
+        <img src="static/img/logo.png" alt="">
+        <span class="d-none d-lg-block">R-NLP</span>
+      </a>
+      <i class="bi bi-list toggle-sidebar-btn"></i>
+    </div><!-- End Logo -->
     
+
+
+  </header><!-- End Header -->
+
+  <!-- ======= Sidebar ======= -->
+  <aside id="sidebar" class="sidebar">
+
+    <ul class="sidebar-nav" id="sidebar-nav">
+
+      <li class="nav-item">
+        <a class="nav-link " href="{{ url_for('dashboard') }}">
+          <i class="bi bi-grid"></i>
+          <span>Dashboard</span>
+        </a>
+      </li><!-- End Dashboard Nav -->
+      
+      
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{{ url_for('read_index') }}">
+          <i class="fa-solid fa-house"></i>
+          <span>Home</span>
+        </a>
+      </li><!-- End Home Page Nav -->
+      
+
+    </ul>
+
+  </aside><!-- End Sidebar-->
+
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Dashboard</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{{ url_for('read_index') }}">Home</a></li>
+          <li class="breadcrumb-item active">Dashboard</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section dashboard">
+      <div class="row">
+
+        <!-- Left side columns -->
+        <div class="col-lg-8">
+          <div class="row">
+
+            <!-- Sales Card -->
+            <div class="col-xxl-4 col-md-6">
+              <div class="card info-card sales-card">
+                <div class="card-body">
+                  <h5 class="card-title">Job Description</h5>
+
+                  <div class="d-flex align-items-center">
+                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                      <i class="bi bi-briefcase"></i>
+
+
+                    </div>
+                    <div class="ps-3">
+                      <h6>{{num_job_desc}}</h6>
+                      
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div><!-- End Sales Card -->
+
+            <!-- Revenue Card -->
+            <div class="col-xxl-4 col-md-6">
+              <div class="card info-card revenue-card">
+
+                <div class="filter">
+                  <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                    <li class="dropdown-header text-start">
+                      <h6>Filter</h6>
+                    </li>
+                    <ul>
+                      {% for job_desc in job_descs %}
+                        <li>
+                          <a class="dropdown-item" href="#" data-job-id="{{ job_desc.job_description_id }}" onclick="handleJobClick(event)">
+                            {{ job_desc.job_description_id }}. {{ job_desc.job_name }}
+                          </a>
+                        </li>
+                      {% endfor %}
+                      <li><a class="dropdown-item" href="{{ url_for('dashboard') }}">ALL</a></li>
+                    </ul>
+                    
+                    
+                  </ul>
+                </div>
+
+                <div class="card-body">
+                  <h5 class="card-title">Candidate <span>| {{element}}</span></h5>
+
+                  <div class="d-flex align-items-center">
+                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                      <i class="bi bi-people"></i>
+                    </div>
+                    <div class="ps-3">
+                      <h6>{{num_candidat}}</h6>
+                      
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div><!-- End Revenue Card -->
+
+            
+          </div>
+        </div><!-- End Left side columns -->
+
+        
+      </div>
+    </section>
+
+    <section class="section"></section>
+      <div class="row">
+        <div class="col-lg-12">
+
+          <div class="card">
+            <div class="card-body">
+
+
+              <h5 class="card-title">{{Table_title}}</h5>
+
+              <table class="table datatable">
+                <thead>
+                  <tr>
+                    <th>Email</th>
+                    <th>Job Description</th>
+                    <th>Score</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for cand_Inf in candidatInfo %}
+                  <tr>
+                    <td>{{ cand_Inf.CandidatInfo.email }}</td>
+                    <td>{{ cand_Inf.JobDescription.job_description_id }}. {{ cand_Inf.JobDescription.job_name }}</td>
+                    <td>{{ cand_Inf.CandidatInfo.score }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+              <!-- End Table with stripped rows -->
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+  </main><!-- End #main -->
+
+  <!-- ======= Footer ======= -->
+  <footer id="footer" class="footer">
+    <div class="copyright">
+      &copy; Copyright <strong><span>R-NLP</span></strong>. All Rights Reserved
+    </div>
+    <div class="credits">
+      <!-- All the links in the footer should remain intact. -->
+      <!-- You can delete the links only if you purchased the pro version. -->
+      <!-- Licensing information: https://bootstrapmade.com/license/ -->
+      <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/ -->
+      
+    </div>
+  </footer><!-- End Footer -->
+
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Vendor JS Files -->
+  <script src="static/vendor1/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="static/vendor1/chart.js/chart.umd.js"></script>
+  <script src="static/vendor1/echarts/echarts.min.js"></script>
+  <script src="static/vendor1/quill/quill.js"></script>
+  <script src="static/vendor1/simple-datatables/simple-datatables.js"></script>
+  <script src="static/vendor1/tinymce/tinymce.min.js"></script>
+  <script src="static/vendor1/php-email-form/validate.js"></script>
+
+  <!-- Template Main JS File -->
+  <script src="static/js/main1.js"></script>
+
+  <script>
+    function handleJobClick(event) {
+        // Prevent the default action of the link
+        event.preventDefault();
+  
+        // Get the clicked element
+        const clickedElement = event.currentTarget;
+  
+        // Get the job_description_id from the data attribute
+        const jobId = clickedElement.getAttribute('data-job-id');
+  
+        // Redirect to a new URL with jobId as a query parameter
+        if (jobId) {
+            // Change window location to the new URL with jobId
+            window.location.href = `/dashboard?jobId=${jobId}`;
+        }
+    }
+  </script>
+    
+
+
 </body>
+
 </html>

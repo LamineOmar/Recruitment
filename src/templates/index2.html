@@ -41,9 +41,10 @@
   <header id="header" class="header d-flex align-items-center sticky-top">
     <div class="container-fluid container-xl position-relative d-flex align-items-center">
 
-      <a href="index.html" class="logo d-flex align-items-center me-auto">
-        <!-- Uncomment the line below if you also wish to use an image logo -->
-        <!-- <img src="assets/img/logo.png" alt=""> -->
+     
+      <a href="#" class="logo d-flex align-items-center me-auto">
+          <!-- Uncomment the line below if you also wish to use an image logo -->
+          <img src="static/img/logo.png" alt="">
         <h1 class="sitename">R-NLP</h1>
       </a>
 
@@ -136,7 +137,7 @@
   <script src="static/js/main.js"></script>
 
   <script>
-    var dont_show_button = {{ dont_show_button }};
+    var dont_show_button = { dont_show_button };
 
     if (dont_show_button === 1) {
         document.getElementById("question").style.display = "none"; // Afficher le bouton

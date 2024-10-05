@@ -34,3 +34,27 @@ async def handle_form(
 ):
     result = crud.crud.get_Tests_info(db)
     return {"Received tests": result}
+
+@app_router.get("/show_candinfo")
+async def handle_form(
+    db: Session = Depends(get_db)
+):
+    result = crud.crud.get_candinfo_info(db)
+    return {"Received tests": result}
+
+@app_router.get("/table-columns/{table_name}")
+async def get_table_columns(table_name: str, db: Session = Depends(get_db)):
+    try:
+        # Step 2: Reflect the table schema
+        models.Base.metadata.reflect(bind=engine, only=[table_name])
+        table = models.Base.metadata.tables.get(table_name)
+
+        if table is None:
+            return {"error": "Table not found"}
+
+        # Extract column names
+        columns = [column.name for column in table.columns]
+        return {"columns": columns}
+
+    except Exception as e:
+        return {"error": str(e)}

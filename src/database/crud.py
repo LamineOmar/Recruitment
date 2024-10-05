@@ -39,6 +39,19 @@ class crud:
     def get_Tests_info(db:Session):
         return db.query(models.Test).all()
     
+    def get_candinfo_info(db:Session):
+        return db.query(models.CandidatInfo).all()
+    
+
+    def get_candidat_info_with_job_description_of_job_x(db: Session, jobId: int):
+        query = db.query(models.CandidatInfo, models.JobDescription).join(
+            models.JobDescription, models.CandidatInfo.job_description_id == models.JobDescription.job_description_id
+        )
+        if jobId != 0:
+            query = query.filter(models.CandidatInfo.job_description_id == jobId)
+        result = query.all()
+        return result
+
     def get_last_job_description(db: Session):
         result = db.query(models.JobDescription).order_by(desc(models.JobDescription.job_description_id)).first()
         return result.job_description, result.job_description_id

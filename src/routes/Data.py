@@ -1,8 +1,6 @@
 import sys
 import os
 
-
-
 import email
 import os
 from fastapi import APIRouter, Request, Form, File, UploadFile, Depends, status
@@ -16,11 +14,12 @@ from src.helpers.config import get_settings, Settings
 from src.controllers import DataController
 from sqlalchemy.orm import Session
 from src.database.schema import JobDescription, Test, CandidatInfo, CandidatAnswer
+
 from src.database.database import SessionLocal, engine
 from src.database import crud, models
 #import aiofiles
 from src.models import ResponseSignal
-
+import shutil
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -43,13 +42,14 @@ templates_dir = os.path.abspath("src/templates")
 templates = Jinja2Templates(directory=templates_dir)
 
 # Define a GET route to serve the form
-@post_router.get("/", response_class=HTMLResponse)
+@post_router.get("/", name="read_index", response_class=HTMLResponse)
 async def get_form(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
 @post_router.post("/submit", response_class=JSONResponse)
 async def submit_form(
     request: Request,
+    job_name: str = Form(...),
     user_input: str = Form(...),
     top_n: int = Form(...),
     files: List[UploadFile] = File(...),
@@ -61,21 +61,16 @@ async def submit_form(
     matching_system = MatchingControllers.JobMatchingSystem()  # Instantiate the matching system
 
     # Save the job description into the database
-    job_description = JobDescription(job_description=user_input)
-    crud.crud.save_job_description(db, job_description)
+    job_description_obj = JobDescription(job_name=job_name, job_description=user_input)
+    crud.crud.save_job_description(db, job_description_obj)
 
     # Ensure the upload directory exists
-    upload_directory = "assets/files"
-    os.makedirs(upload_directory, exist_ok=True)
+    # upload_directory = "assets/files"
+    # os.makedirs(upload_directory, exist_ok=True)
 
     file_ids = []  # List to store processed file IDs
     extracted_data = []  # List to store extracted information
-    extracted_skills_csv = os.path.join(upload_directory, "extracted_skills.csv")
 
-    # Save job description to a file
-    job_description_path = os.path.join(upload_directory, "job_description.txt")
-    with open(job_description_path, 'w', encoding='utf-8') as fichier:
-        fichier.write(user_input)
 
     for file in files:
         # Validate uploaded file and job description
@@ -108,7 +103,11 @@ async def submit_form(
         # Save the post description to a file
         file_post = os.path.join(data_controller.files_dir, "post_description.txt")
         with open(file_post, 'w', encoding='utf-8') as fichier:
+            fichier.write(job_name + "\n")
             fichier.write(user_input)
+
+        # Save job description to a file
+        job_description_path = os.path.join(data_controller.files_dir, "post_description.txt")
 
         # Extract information from the resume
         text = skills_extractor.extract_text_from_pdf(pdf_path=file_path)
@@ -180,6 +179,7 @@ async def submit_form(
         extracted_data.append(extracted_info)
         file_ids.append(file_id)
 
+    extracted_skills_csv = os.path.join(data_controller.files_dir, "extracted_skills.csv")
     # Save extracted data to a CSV
     skills_extractor.save_to_single_csv(extracted_data, extracted_skills_csv)
 
@@ -188,27 +188,27 @@ async def submit_form(
     {"filename": match[0], "email": match[1]} for match in matching_system.match_job_description_to_skills(job_description_path, extracted_skills_csv, top_n=top_n)
 ]
 
-
+    job_description, job_description_id =crud.crud.get_last_job_description(db)
     # Save matching results into the CandidatInfo table
     for match in top_matches:
         email = match['email']  # Use the extracted email from the match
-        candidat_info = models.CandidatInfo(
-            email=email,  # Extracted email from the CV
-            test_password=None,  # Optional test password
-            
+        candidat_info = CandidatInfo(
+            email=email,  # Extracted email from the CV  
+            test_password=data_controller.generate_random_string(8),
+            job_description_id=job_description_id,
+            score = None
         )
-        db.add(candidat_info)
+        crud.crud.save_CandidatInfo(db, candidat_info)
 
-    db.commit()  # Commit the transaction to the database
-
+    shutil.rmtree(data_controller.files_dir)
     # Display the results after submission
     return templates.TemplateResponse(
-    "results.html",
+    "index2.html",
     context={
         "request": request,
         "signal": ResponseSignal.FILE_UPLOAD_SUCCESS.value,
         "signal_post": ResponseSignal.POST_UPLOAD_SUCCESS.value,
         "file_ids": file_ids,
-        "top_matches": top_matches  # Résultats du matching
+        #"top_matches": top_matches  # Résultats du matching
     }
 )

@@ -3,6 +3,7 @@ from typing import Optional
 
 class JobDescription(BaseModel):
     job_description :str
+    job_name  :str
 
     class Config:
         orm_mode = True
@@ -19,7 +20,8 @@ class Test(BaseModel):
         
         
 class CandidatInfo(BaseModel):
-    email : str
+    email : str 
+    score : Optional[str]
     test_password : Optional[str]
     job_description_id : int
 

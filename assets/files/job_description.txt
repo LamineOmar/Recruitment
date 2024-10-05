@@ -1,7 +1,0 @@
-We are looking for an entry-level Data Analyst to join our dynamic team. The ideal candidate will have a passion for data and an ability to extract actionable insights from raw data. You will work closely with our teams to interpret data, analyze results using statistical techniques and provide ongoing reporting.
-
-Responsibilities:
-
-Collect, organize and analyze data sets from various sources. Use data visualization tools to present clear and concise information. Work with cross-functional teams to define data analysis objectives and provide insights. Create and maintain dashboards to track key metrics. Identify trends, correlations and patterns in data. Generate periodic reports for management. Required skills:
-
-Basic knowledge of statistics and data analysis. Experience with programming languages ​​such as Python and R. Data manipulation skills with Pandas and Numpy. Experience with data visualization tools like Tableau, Power BI, or Matplotlib. Understanding of relational databases and ability to write SQL queries. Ability to work in a team and communicate complex results in an understandable manner. Attention to detail and good analytical skills. A degree in computer science, mathematics, statistics or a related field is desired.

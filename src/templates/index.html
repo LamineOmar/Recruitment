@@ -41,9 +41,10 @@
   <header id="header" class="header d-flex align-items-center sticky-top">
     <div class="container-fluid container-xl position-relative d-flex align-items-center">
 
-      <a href="index.html" class="logo d-flex align-items-center me-auto">
-        <!-- Uncomment the line below if you also wish to use an image logo -->
-        <!-- <img src="assets/img/logo.png" alt=""> -->
+      
+      <a href="#" class="logo d-flex align-items-center me-auto">
+          <!-- Uncomment the line below if you also wish to use an image logo -->
+          <img src="static/img/logo.png" alt="">
         <h1 class="sitename">R-NLP</h1>
       </a>
 
@@ -53,6 +54,9 @@
         
           <li><a href="#team">Team</a></li>
           <li><a href="#contact">Contact</a></li>
+          <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+
+          <li><a href="#">Test</a></li>
         </ul>
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>
@@ -106,6 +110,10 @@
             <div class="php-email-form">
               
             <div class="row gy-4"  >
+
+              <div class="col-md-12">
+                <input class="form-control file-input" id="job_name" type="text" name="job_name" placeholder="Enter job Name">
+              </div>
 
               <div class="col-md-12">
                 <textarea class="form-control" name="user_input" rows="4" placeholder="Enter Post description" required=""></textarea>
@@ -207,7 +215,7 @@
               </div>
               <div class="member-info">
                 <h4>Lamine Omar</h4>
-                <span>Data Scientist</span>
+                <span>junior Data Scientist</span>
               </div>
             </div>
           </div><!-- End Team Member -->
@@ -233,7 +241,7 @@
           <div class="col-lg-3 col-md-6 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="300">
             <div class="team-member">
               <div class="member-img">
-                <img src="static/img/team/team-3.jpg" class="img-fluid" alt="">
+                <img src="static/img/team/team-3.jpeg" class="img-fluid" alt="">
                 <div class="social">
                   <a href=""><i class="bi bi-twitter-x"></i></a>
                   <a href=""><i class="bi bi-facebook"></i></a>
@@ -243,7 +251,7 @@
               </div>
               <div class="member-info">
                 <h4>soufiane Amine</h4>
-                <span>CTO</span>
+                <span>junior Data Scientist</span>
               </div>
             </div>
           </div><!-- End Team Member -->

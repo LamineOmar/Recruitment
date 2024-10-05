@@ -4,6 +4,7 @@ from sqlalchemy import Column, String, Boolean, Integer, ForeignKey
 class JobDescription(Base):
     __tablename__ = 'job_description'
     job_description_id = Column(Integer, primary_key=True, autoincrement=True)
+    job_name  = Column(String)
     job_description = Column(String)
 
 class Test(Base):
@@ -17,7 +18,8 @@ class Test(Base):
 class CandidatInfo(Base):
     __tablename__ = 'candidat_info'
     id_candidatInfo = Column(Integer, primary_key=True, autoincrement=True)
-    email = Column(String)
+    email = Column(String) 
+    score = Column(String)
     test_password = Column(String)
     job_description_id = Column(Integer, ForeignKey('job_description.job_description_id'))
 
