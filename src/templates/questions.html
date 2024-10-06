@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Questions Générées</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .question {
+            margin-bottom: 20px;
+        }
+        .question p {
+            font-weight: bold;
+        }
+        .options {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+        .submit-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        .submit-btn:hover {
+            background-color: #218838;
+        }
+        label {
+            display: block; /* Display options as block elements for better spacing */
+            margin-bottom: 10px; /* Space between radio options */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Répondre aux Questions</h1>
+        <form action="/submit_answers" method="post">
+            <input type="hidden" name="candidat_id" value="{{ candidat_id }}"/>
+            {% for test in tests %}
+                <div class="question">
+                    <h3>{{ test.question }}</h3>
+                    <div class="options">
+                        {% for option in test.options %}
+                            <label>
+                                <input type="radio" name="answer_{{ test.id_test }}" value="{{ option }}">
+                                {{ option }}
+                            </label>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+            <button type="submit" class="submit-btn">Soumettre les Réponses</button>
+        </form>
+    </div>
+</body>
+</html>
