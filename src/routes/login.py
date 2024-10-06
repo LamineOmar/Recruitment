@@ -8,6 +8,7 @@ from src.database.schema import CandidatAnswer
 from sqlalchemy.orm import Session
 import ast
 import logging
+from src.database import crud, models
 
 
 # Dépendance pour la session de la base de données
@@ -82,19 +83,19 @@ async def display_questions(candidat_id: int, request: Request, db: Session = De
     return templates.TemplateResponse("questions.html", {"request": request, "tests": tests, "candidat_id": candidat_id})
 
 
+
 @login_app.post("/submit_answers", response_class=HTMLResponse)
 async def submit_answers(
-    request: Request, 
-    db: Session = Depends(get_db), 
+    request: Request,
+    db: Session = Depends(get_db),
     candidat_id: int = Form(...), 
     **answers  # Collect all answer submissions
 ):
-    logging.info("Début de la soumission des réponses.")
     logging.info(f"ID du candidat reçu : {candidat_id}")
     logging.info(f"Réponses reçues : {answers}")
 
     # Récupérer le candidat
-    candidat = db.query(CandidatInfo).filter(CandidatInfo.id_candidatInfo == candidat_id).first()
+    candidat = db.query(models.CandidatInfo).filter(models.CandidatInfo.id_candidatInfo == candidat_id).first()
 
     if not candidat:
         logging.error("Candidat non trouvé.")
@@ -106,19 +107,19 @@ async def submit_answers(
             id_test = int(key.split("_")[1])  # Extraire l'id_test à partir du nom du champ
             logging.info(f"Enregistrement de la réponse : {value} pour le test ID : {id_test}")
 
-            candidat_answer = CandidatAnswer(
+            # Create a CandidatAnswer object
+            candidat_answer_info = CandidatAnswer(
                 id_candidat=candidat.id_candidatInfo,  # Assuming this is the correct field for candidate ID
                 id_test=id_test,
                 candidat_answer=value
             )
-            db.add(candidat_answer)
-    
-    try:
-        db.commit()
-        logging.info("Réponses enregistrées avec succès.")
-    except Exception as e:
-        logging.error(f"Erreur lors de l'enregistrement des réponses : {str(e)}")
-        db.rollback()
-        return templates.TemplateResponse("error.html", {"request": request, "error": "Erreur lors de l'enregistrement des réponses."})
+            
+            # Save the answer using the CRUD function
+            try:
+                crud.crud.save_CandidatAnswer(db, candidat_answer_info)
+            except Exception as e:
+                logging.error(f"Erreur lors de l'enregistrement de la réponse : {str(e)}")
+                return templates.TemplateResponse("error.html", {"request": request, "error": "Erreur lors de l'enregistrement de la réponse."})
 
+    logging.info("Réponses enregistrées avec succès.")
     return templates.TemplateResponse("validate.html", {"request": request})
