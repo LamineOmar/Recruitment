@@ -57,7 +57,7 @@
 <body>
     <div class="container">
         <h1>Répondre aux Questions</h1>
-        <form action="/submit_answers" method="post">
+        <form action="/submit_answers" method="post" id="form_test" >
             <input type="hidden" name="candidat_id" value="{{ candidat_id }}"/>
             {% for test in tests %}
                 <div class="question">
@@ -65,7 +65,7 @@
                     <div class="options">
                         {% for option in test.options %}
                             <label>
-                                <input type="radio" name="answer_{{ test.id_test }}" value="{{ option }}">
+                                <input type="radio" name='answer_{{ test.id_test }}' value="{{ option }}">
                                 {{ option }}
                             </label>
                         {% endfor %}
@@ -75,5 +75,8 @@
             <button type="submit" class="submit-btn">Soumettre les Réponses</button>
         </form>
     </div>
+    
+
+
 </body>
 </html>

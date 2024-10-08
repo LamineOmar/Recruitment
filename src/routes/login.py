@@ -8,6 +8,8 @@ from src.database.schema import CandidatAnswer
 from sqlalchemy.orm import Session
 import ast
 import logging
+from sqlalchemy import update
+from typing import Dict
 from src.database import crud, models
 
 
@@ -88,12 +90,8 @@ async def display_questions(candidat_id: int, request: Request, db: Session = De
 async def submit_answers(
     request: Request,
     db: Session = Depends(get_db),
-    candidat_id: int = Form(...), 
-    **answers  # Collect all answer submissions
+    candidat_id: int = Form(...),
 ):
-    logging.info(f"ID du candidat reçu : {candidat_id}")
-    logging.info(f"Réponses reçues : {answers}")
-
     # Récupérer le candidat
     candidat = db.query(models.CandidatInfo).filter(models.CandidatInfo.id_candidatInfo == candidat_id).first()
 
@@ -101,25 +99,24 @@ async def submit_answers(
         logging.error("Candidat non trouvé.")
         return templates.TemplateResponse("error.html", {"request": request, "error": "Candidat non trouvé."})
     
+    # Récupérer les données du formulaire
+    form_data = await request.form()
+    
     # Enregistrer les réponses du candidat
-    for key, value in answers.items():
-        if key.startswith("answer_"):
-            id_test = int(key.split("_")[1])  # Extraire l'id_test à partir du nom du champ
-            logging.info(f"Enregistrement de la réponse : {value} pour le test ID : {id_test}")
+    Score = 0
+    for key, value in form_data.items():
+        if key.startswith('answer_'):
+            question_id = key.split('answer_')[1]
+            answer_reel = db.query(models.Test.answer).filter(models.Test.id_test == question_id).first()
 
-            # Create a CandidatAnswer object
-            candidat_answer_info = CandidatAnswer(
-                id_candidat=candidat.id_candidatInfo,  # Assuming this is the correct field for candidate ID
-                id_test=id_test,
-                candidat_answer=value
-            )
-            
-            # Save the answer using the CRUD function
-            try:
-                crud.crud.save_CandidatAnswer(db, candidat_answer_info)
-            except Exception as e:
-                logging.error(f"Erreur lors de l'enregistrement de la réponse : {str(e)}")
-                return templates.TemplateResponse("error.html", {"request": request, "error": "Erreur lors de l'enregistrement de la réponse."})
+            # Check if answer_reel is not None and compare with the value
+            if answer_reel and str(answer_reel.answer) == value:
+                Score += 1
 
+    # Update the candidate's score
+    stmt = update(models.CandidatInfo).where(models.CandidatInfo.id_candidatInfo == candidat_id).values(score=Score)
+    db.execute(stmt)
+    db.commit()
+    
     logging.info("Réponses enregistrées avec succès.")
     return templates.TemplateResponse("validate.html", {"request": request})

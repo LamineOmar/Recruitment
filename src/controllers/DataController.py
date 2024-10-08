@@ -65,7 +65,7 @@ class DataController(BaseController):
         - Each question should have:
         - "question": The text of the question.
         - "options": A list of multiple-choice options.
-        - "answer": The correct answer.
+        - "answer": The correct answer is exactly one of the options.
 
         Strict Guidelines:
         - **Only generate questions that test the candidate's understanding and skills**, based on the technologies and responsibilities mentioned in the "Compétences Techniques" and "Responsabilité" sections.
