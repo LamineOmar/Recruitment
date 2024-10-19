@@ -34,4 +34,4 @@ cp src/.env.example src/.env
 ```bash
 docker-compose up --build
 ```
- 5) Navigate to http://localhost:8080/
+Navigate to http://localhost:8080/
