@@ -2,17 +2,19 @@
 
 This project aims to digitize the recruitment process by matching candidates' CVs with job descriptions and generating questions for these candidates, among other tasks.
 
-## Requirements
-- Python 3.10.14 
+### Prerequisites
+
+Before you begin, ensure you have the following:
+
+- `Docker` & `Python` installed on your system
+- `API Keys` for Gemini LLM  
 
 #### install Python using Miniconda
 
-1) Downloadand install Miniconda from [here](https://docs.anaconda.com/miniconda/#quick-command-line-install)
-
-or on WSL:
+We recommend that developers create a new Conda virtual environment to isolate dependencies (for WSL):
 
 ```bash 
-wget [link]
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 ```
 2) Create a new environment using the following command:
 ```bash
