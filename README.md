@@ -12,7 +12,7 @@ Before you begin, ensure you have the following:
 #### install Python using Miniconda
 
 We recommend that developers create a new Conda virtual environment to isolate dependencies (for WSL):
-
+1) Install Miniconda in WSL:
 ```bash 
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 ```
