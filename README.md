@@ -2,6 +2,9 @@
 
 This project aims to digitize the recruitment process by matching candidates' CVs with job descriptions and generating questions for these candidates, among other tasks.
 
+![image](https://github.com/user-attachments/assets/559726b2-9103-4a4f-8be9-04ec811ad0ee)
+
+
 ### Prerequisites
 
 Before you begin, ensure you have the following:
@@ -35,6 +38,4 @@ cp src/.env.example src/.env
 docker-compose up --build
 ```
 Navigate to http://localhost:8080/
-
-![image](https://github.com/user-attachments/assets/559726b2-9103-4a4f-8be9-04ec811ad0ee)
 
